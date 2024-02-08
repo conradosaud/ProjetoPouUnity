@@ -1,10 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class JogoComidinha : MonoBehaviour
 {
 
+    // Level controller
+    public static int pontos = 0;
+    public static int erros = 0;
+    public TextMeshProUGUI textoTempoPartida;
+    public TextMeshProUGUI textoNivel;
+    float tempoPartida = 0;
+    int nivel = 1;
+
+    // Configuração de aparição das comidinhas
     public Transform local;
     public float tempoMinimo = 1.5f;
     public float tempoMaximo = 3.5f;
@@ -21,6 +31,7 @@ public class JogoComidinha : MonoBehaviour
 
         if( tempoPercorrido >= tempoDefinido)
         {
+
             // Define qual será o tempo para spawnar um novo objeto
             tempoPercorrido = 0;
             tempoDefinido = Random.Range( tempoMinimo, tempoMaximo );
@@ -40,5 +51,24 @@ public class JogoComidinha : MonoBehaviour
             criado.position = new Vector2(novaPosicao, local.position.y );
 
         }
+    }
+
+    private void FixedUpdate()
+    {
+        // Guarda o tempo da partida e mostra na tela de forma arredondada
+        tempoPartida += Time.deltaTime;
+        textoTempoPartida.text = Mathf.RoundToInt(tempoPartida).ToString();
+
+        // Verifica se atingiu o novo nível do jogo e aumenta o desafio de tempo das comidinhas
+        float tempoCadaNivel = 15f;
+        if( tempoPartida % tempoCadaNivel < 0.01f)
+        {
+            nivel++;
+            tempoMinimo -= tempoMinimo * (nivel * 10) / 100;
+            tempoMaximo -= tempoMaximo * (nivel * 10) / 100;
+            textoNivel.text = nivel.ToString();
+        }
+ 
+
     }
 }
